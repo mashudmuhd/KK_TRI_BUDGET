@@ -37,4 +37,36 @@ function watchCards(){document.querySelectorAll('.stat,.cost,.payment-card,.grou
 
 const upiField=document.getElementById('upi-id');
 document.getElementById('copy-upi').addEventListener('click',async()=>{const status=document.getElementById('copy-status');try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(upiField.value)}else{upiField.focus();upiField.select();upiField.setSelectionRange(0,upiField.value.length);if(!document.execCommand('copy'))throw new Error('Copy unavailable')}status.textContent='UPI ID കോപ്പി ചെയ്തു ✓';}catch{upiField.focus();upiField.select();upiField.setSelectionRange(0,upiField.value.length);status.textContent='UPI ID തിരഞ്ഞെടുത്തിട്ടുണ്ട്. അമർത്തിപ്പിടിച്ച് Copy തിരഞ്ഞെടുക്കുക.'}});
-</script></html>
+</script>
+<style>
+.payment-reminder{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(12,37,29,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.payment-reminder[hidden]{display:none}
+.payment-reminder__card{width:min(100%,440px);max-height:85vh;overflow:auto;box-sizing:border-box;padding:36px 28px 28px;border:1px solid #d9decf;border-radius:28px;background:#faf9f3;color:#183e32;box-shadow:0 24px 90px #071c2950;text-align:center;animation:reminder-in .35s ease-out}
+.payment-reminder__icon{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 20px;border-radius:50%;background:#e8eddf;color:#32573b;font-size:26px}
+.payment-reminder__card h2{font-size:24px;line-height:1.5;margin:0 0 16px;color:#183e32}
+.payment-reminder__card p{font-size:16px;line-height:1.95;margin:0 0 18px;color:#52675b}
+.payment-reminder__deadline{display:block;padding:14px 12px;margin:20px 0;border-radius:14px;background:#eeeee1;border:1px solid #daddcb;font-size:17px;line-height:1.8}
+.payment-reminder__card button{width:100%;min-height:52px;padding:14px 20px;border:0;border-radius:14px;background:#183e32;color:white;font:inherit;font-weight:700;cursor:pointer;touch-action:manipulation}
+.payment-reminder__card button:focus-visible{outline:3px solid #b3a16b;outline-offset:4px}
+@keyframes reminder-in{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.payment-reminder__card{animation:none}}
+</style>
+<div class="payment-reminder" id="payment-reminder" role="dialog" aria-modal="true" aria-labelledby="reminder-title" aria-describedby="reminder-description">
+<div class="payment-reminder__card">
+<div class="payment-reminder__icon" aria-hidden="true">◷</div>
+<h2 id="reminder-title">പണമടയ്ക്കാനുള്ള ഓർമ്മപ്പെടുത്തൽ</h2>
+<p id="reminder-description">ബാക്കി തുക നൽകാനുള്ളവർ, ട്രിപ്പിന്റെ ഒരുക്കങ്ങൾ സമയബന്ധിതമായി പൂർത്തിയാക്കുന്നതിനായി താഴെ നൽകിയ സമയത്തിന് മുമ്പായി പണമടയ്ക്കണമെന്ന് സ്നേഹപൂർവ്വം അഭ്യർത്ഥിക്കുന്നു.</p>
+<strong class="payment-reminder__deadline">2026 ഒക്ടോബർ 23, വെള്ളിയാഴ്ച<br>വൈകിട്ട് 4:00-ന് മുമ്പായി</strong>
+<p>Finance Controller: <strong>Sahala TP</strong><br>എല്ലാവരുടെയും സഹകരണത്തിന് നന്ദി.</p>
+<button type="button" id="agree-payment-reminder">Agree · സമ്മതിക്കുന്നു</button>
+</div></div>
+<script>
+(function(){
+var overlay=document.getElementById('payment-reminder'),agree=document.getElementById('agree-payment-reminder'),previous=document.activeElement,scrollStyle=document.documentElement.style.overflow;
+document.documentElement.style.overflow='hidden';
+agree.focus({preventScroll:true});
+overlay.addEventListener('keydown',function(e){if(e.key==='Tab'){e.preventDefault();agree.focus();}});
+agree.addEventListener('click',function(){overlay.hidden=true;document.documentElement.style.overflow=scrollStyle;if(previous&&previous.focus)previous.focus({preventScroll:true});});
+})();
+</script>
+</html>
